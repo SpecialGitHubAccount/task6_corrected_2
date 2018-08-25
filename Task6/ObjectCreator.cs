@@ -10,11 +10,26 @@ using System.Xml.Linq;
 
 namespace Task6
 {
-    public abstract class LibraryResourceCreator
+    public static class ObjectCreator
     {
-        public abstract LibraryResource CreateFromXElementIfMatch(XElement item);
 
-        protected LibraryResource Int64Setter( LibraryResource libResource, XElement item)
+        public static object CreateFromXElementIfMatch(XElement item, string ns)
+        {
+            Type entityType = Assembly.GetExecutingAssembly().GetTypes()
+                .FirstOrDefault(ti => ti.Namespace == ns && ti.Name == item.Name);
+            if(entityType == null)
+            {
+                throw new Exception();
+            }
+            object entity = Activator.CreateInstance(entityType);
+            Int32Setter(entity, item);
+            Int64Setter(entity, item);
+            StringsSetter(entity, item);
+            DateSetter(entity, item);
+            return entity;
+        }
+
+        private static object Int64Setter( object libResource, XElement item)
         {
             foreach (PropertyInfo property in libResource.GetType().GetProperties().Where(pi => pi.PropertyType == typeof(Nullable<Int64>)))
             {
@@ -39,7 +54,7 @@ namespace Task6
             return libResource;
         }
 
-        protected LibraryResource Int32Setter(LibraryResource libResource, XElement item)
+        private static object Int32Setter(object libResource, XElement item)
         {
             foreach (PropertyInfo property in libResource.GetType().GetProperties().Where(pi => pi.PropertyType == typeof(Nullable<Int32>)))
             {
@@ -64,7 +79,7 @@ namespace Task6
             return libResource;
         }
 
-        protected LibraryResource StringsSetter(LibraryResource libResource, XElement item)
+        private static object StringsSetter(object libResource, XElement item)
         {
             foreach (PropertyInfo property in libResource.GetType().GetProperties().Where(pi => pi.PropertyType == typeof(string)))
             {
@@ -86,7 +101,7 @@ namespace Task6
             return libResource;
         }
 
-        protected LibraryResource DateSetter( LibraryResource libResource, XElement item)
+        private static object DateSetter(object libResource, XElement item)
         {
             foreach (PropertyInfo property in libResource.GetType().GetProperties().Where(pi => pi.PropertyType == typeof(Nullable<DateTime>)))
             {

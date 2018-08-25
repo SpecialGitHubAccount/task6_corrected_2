@@ -45,25 +45,13 @@ namespace Task6
             reader = XmlReader.Create(stream);
             reader.ReadToFollowing(XmlRootElelement);
             XElement catalog = XElement.ReadFrom(reader) as XElement;
-
             List<LibraryResource> libResources = new List<LibraryResource>();
-            libResCreators = new LibraryResourceCreator[3] 
-            {
-                new BookCreator(),
-                new NewspaperCreator(),
-                new PatentCreator()
-            };
+            
 
             catalog.Elements().ToList().ForEach((libResourceXElement) =>
             {
-                foreach (var libResourceCreator in libResCreators)
-                {
-                    LibraryResource libraryResource = libResourceCreator.CreateFromXElementIfMatch(libResourceXElement);
-                    if(libraryResource !=null)
-                    {
-                        libResources.Add(libraryResource);
-                    }
-                }
+                LibraryResource libraryResource = (LibraryResource)ObjectCreator.CreateFromXElementIfMatch(libResourceXElement, this.GetType().Namespace);
+                libResources.Add(libraryResource);                
             });
             return libResources;
         }
@@ -95,8 +83,7 @@ namespace Task6
         private XmlWriter writer;
         private XDocument doc;
         private readonly Stream stream;
-
-        private LibraryResourceCreator[] libResCreators = null;
+        
         private static string XmlRootElelement = "catalog";
     }
 }

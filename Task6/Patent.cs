@@ -14,14 +14,14 @@ namespace Task6
         public string Inventor { get; set; }
         public string Country { get; set; }
         [Required]
-        public int? RegistrationNumber { get; set; }
+        public int RegistrationNumber { get; set; }
         public DateTime? ApplicationSubmissionDate { get; set; }
         public DateTime? PublicationDate { get; set; }
         
         public override string ToString()
         {
             return base.ToString() + string.Format("RegistrationNumber: {0}\nPublicationDate: {1}\nInventor: {2},\nCountry: {3}\nApplicationSubmissionDate: {4}",
-                RegistrationNumber.HasValue? RegistrationNumber.Value.ToString(): "Unknown", 
+                RegistrationNumber, 
                 PublicationDate.HasValue ? PublicationDate.Value.ToString("yyyy-MM-dd") : "Unknown", 
                 !string.IsNullOrEmpty( Inventor)? Inventor : "Unknown", 
                 !string.IsNullOrEmpty(Country)? Country : "Unknown", 
